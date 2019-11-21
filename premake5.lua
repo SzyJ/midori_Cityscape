@@ -9,6 +9,7 @@ workspace "Cityscape"
     }
 
 midori_path = "3rd_party/midori_engine/"
+rel_midori_path = ("../" .. midori_path)
 include (midori_path .. "premake_include_midori.lua")
 
 project "Cityscape"
@@ -41,8 +42,7 @@ filter "system:windows"
     systemversion "latest"
 
     defines {
-        "MD_PLATFORM_WINDOWS",
-        "MD_DEF_RESOURCES=\"../3rd_party/midori_engine/midori_engine/res\""
+        "MD_PLATFORM_WINDOWS"
     }
 
 filter "configurations:Debug"
