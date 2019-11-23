@@ -11,3 +11,11 @@
 
 // Textures
 #define TEXTURE_SKYBOX GAME_TEXTURES"skybox/NightSky"
+
+// Models
+#define MODEL_BUILDING GAME_MODELS"buildings/building_"
+#define MODEL_HELICOPTER GAME_MODELS"Helicopter.obj"
+
+// Shaders
+#define SHADER_MODEL_LOADER GAME_SHADERS"MeshLoad"
+#define SHADER_HELICOPTER GAME_SHADERS"Helicopter"

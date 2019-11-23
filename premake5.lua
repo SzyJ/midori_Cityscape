@@ -28,6 +28,7 @@ project "Cityscape"
     }
 
     includedirs {
+        "%{prj.location}/src",
         (midori_path .. "midori_engine/src"),
         (midori_path .. "midori_engine/3rd_party/glm"),
         (midori_path .. "midori_engine/3rd_party/spdlog/include"),

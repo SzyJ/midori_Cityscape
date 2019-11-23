@@ -5,7 +5,7 @@
 // Date: 09/10/2019
 
 #include "Resporces.h"
-
+#include "Objects/Scene.h"
 
 #include <Midori.h>
 #include <imgui.h>
@@ -13,45 +13,58 @@
 class CityLayer : public midori::Layer {
 public:
     CityLayer() : Layer("Cityscape") {
+        m_CursorEnabled = true;
         midori::Application::Get().GetWindow().SetCursorEnabled(m_CursorEnabled);
         unsigned int screenWidth = midori::Application::Get().GetWindow().GetWindowWidth();
         unsigned int screenHeight = midori::Application::Get().GetWindow().GetWindowHeight();
 
-        m_Camera = new midori::PerspectiveCamera((float)screenWidth / (float)screenHeight, glm::vec3(0.0f, 0.0f, 3.0f));
-
+        m_Camera = new midori::PerspectiveCamera((float)screenWidth / (float)screenHeight, glm::vec3(0.0f, 60.0f, 10.0f));
+        //m_Camera->SetFarZ(200.0f);
         m_CityScene.SetCamera(m_Camera);
-        m_Skybox = new midori::Skybox(TEXTURE_SKYBOX);
-        m_CityScene.SetSkybox(m_Skybox);
 
+        m_CityScene.SetScreenDientions(screenWidth, screenHeight);
 
         midori::RenderCommand::Init();
     }
 
     ~CityLayer() {
-        delete m_Skybox;
         delete m_Camera;
-    }
-
-    void OnAttach() override {
-        MD_INFO("Example Layer Attached");
-    }
-
-    void OnDetach() override {
-        MD_INFO("Example Layer Detached");
     }
 
     void OnUpdate(midori::DeltaTime delta) override {
         m_DeltaAverage = (m_DeltaAverage * CONF_FPS_SMOOTHING) + (delta * (1.0f - CONF_FPS_SMOOTHING));
 
+        // Handle input
+        if (midori::Input::IsKeyPressed(MD_KEY_W)) {
+            m_Camera->Move(midori::MovementDirection::forward, delta * m_MoveSpeed);
+        }
+        if (midori::Input::IsKeyPressed(MD_KEY_A)) {
+            m_Camera->Move(midori::MovementDirection::left, delta * m_MoveSpeed);
+        }
+        if (midori::Input::IsKeyPressed(MD_KEY_S)) {
+            m_Camera->Move(midori::MovementDirection::backward, delta * m_MoveSpeed);
+        }
+        if (midori::Input::IsKeyPressed(MD_KEY_D)) {
+            m_Camera->Move(midori::MovementDirection::right, delta * m_MoveSpeed);
+        }
+        if (midori::Input::IsKeyPressed(MD_KEY_SPACE)) {
+            m_Camera->Move(midori::MovementDirection::up, delta * m_MoveSpeed);
+        }
+        if (midori::Input::IsKeyPressed(MD_KEY_LEFT_SHIFT)) {
+            m_Camera->Move(midori::MovementDirection::down, delta * m_MoveSpeed);
+        }
+
         // Draw
         midori::RenderCommand::SetClearColor({ 0.26f, 0.26f, 0.26f, 1.0f });
         midori::RenderCommand::Clear();
+
         m_CityScene.Draw();
     }
 
     void OnImGuiRender() override {
         ImGui::Begin("FPS");
         ImGui::Text(std::to_string((1.0f / m_DeltaAverage)).c_str());
+        ImGui::Text(std::string("Cam Pos: (").append(std::to_string(m_Camera->GetPosition().x)).append(", ").append(std::to_string(m_Camera->GetPosition().y)).append(", ").append(std::to_string(m_Camera->GetPosition().z)).append(")").c_str());
         ImGui::End();
     }
 
@@ -84,6 +97,7 @@ private:
 
         midori::RenderCommand::SetViewport(0, 0, newWidth, newHeight);
         m_Camera->OnWindowResize(newWidth, newHeight);
+        m_CityScene.SetScreenDientions(newWidth, newHeight);
     }
 
     // Debug
@@ -91,14 +105,12 @@ private:
 
     // Camera
     midori::PerspectiveCamera* m_Camera;
-    float m_MoveSpeed = 10.0f;
+    float m_MoveSpeed = 15.0f;
     float m_LookSens = 0.1f;
     bool m_CursorEnabled = false;
 
     // Scene
-    midori::Scene m_CityScene;
-    midori::Skybox* m_Skybox;
-
+    City::Scene m_CityScene;
 };
 
 class Cityscape : public midori::Application {
