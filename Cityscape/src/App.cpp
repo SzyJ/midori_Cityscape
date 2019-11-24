@@ -4,7 +4,7 @@
 // File: SandApp.cpp
 // Date: 09/10/2019
 
-#include "Resporces.h"
+#include "Resources.h"
 #include "Objects/Scene.h"
 
 #include <Midori.h>

@@ -38,8 +38,8 @@ namespace City {
         // City Layout
         const uint32_t c_BuildingRows = 10;
         const uint32_t c_BuildingCols = 10;
-        const uint32_t c_BuildingSize = 10;
-        const uint32_t c_StreetSize = 3;
+        const float c_BuildingSize = 10.0f;
+        const float c_StreetSize = 3.0f;
 
         inline midori::ref<midori::SceneObject> GetBaseBuilding();
 

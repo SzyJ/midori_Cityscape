@@ -5,7 +5,7 @@
 // Date: 24/11/2019
 
 #include "PoliceCar.h"
-#include "Resporces.h"
+#include "Resources.h"
 
 #include <midori/renderer/MeshLoader.h>
 

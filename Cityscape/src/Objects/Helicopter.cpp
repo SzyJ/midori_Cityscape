@@ -5,7 +5,7 @@
 // Date: 23/11/2019
 
 #include "Helicopter.h"
-#include "Resporces.h"
+#include "Resources.h"
 
 #include <midori/renderer/MeshLoader.h>
 #include <midori/scene/Skybox.h>

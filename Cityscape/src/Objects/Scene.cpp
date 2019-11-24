@@ -6,7 +6,7 @@
 
 #include "Scene.h"
 
-#include "Resporces.h"
+#include "Resources.h"
 
 #include <midori/renderer/MeshLoader.h>
 #include <cstdlib>
@@ -90,10 +90,10 @@ namespace City {
     }
 
     void Scene::AddBuildingGrid() {
-        float gridRowCoordLimit = (c_BuildingRows - 1) * 0.5;
-        float gridColCoordLimit = (c_BuildingCols - 1) * 0.5;
+        float gridRowCoordLimit = static_cast<float>(c_BuildingRows - 1) * 0.5f;
+        float gridColCoordLimit = static_cast<float>(c_BuildingCols - 1) * 0.5f;
 
-        const float padding = 0.05;
+        const float padding = 0.05f;
 
         for (float zIndex = gridRowCoordLimit * -1; zIndex < gridRowCoordLimit + padding; zIndex += 1.0f) {
             for (float xIndex = gridColCoordLimit * -1; xIndex < gridColCoordLimit + padding; xIndex += 1.0f) {
