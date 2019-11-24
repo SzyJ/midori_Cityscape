@@ -7,6 +7,7 @@
 #pragma once
 
 #include "Objects/Helicopter.h"
+#include "Objects/PoliceCar.h"
 
 #include <midori/scene/Scene.h>
 #include <midori/renderer/camera/Camera.h>
@@ -32,6 +33,7 @@ namespace City {
         midori::ref<midori::Shader> m_MeshLoadShader;
 
         Helicopter m_Helicopter;
+        PoliceCar m_PoliceCar;
 
         // City Layout
         const uint32_t c_BuildingRows = 10;

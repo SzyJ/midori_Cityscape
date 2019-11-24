@@ -14,9 +14,9 @@
 
 // Models
 #define MODEL_BUILDING GAME_MODELS"buildings/building_"
-#define MODEL_HELICOPTER GAME_MODELS"Helicopter.obj"
 #define MODEL_HELICOPTER_CHASSIS GAME_MODELS"helicopter/Chassis.obj"
 #define MODEL_HELICOPTER_PROPELLER GAME_MODELS"helicopter/Propeller.obj"
+#define MODEL_POLICE_CAR GAME_MODELS"vehicles/PoliceCar.obj"
 
 // Shaders
 #define SHADER_MODEL_LOADER GAME_SHADERS"MeshLoad"

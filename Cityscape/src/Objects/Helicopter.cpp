@@ -41,8 +41,6 @@ namespace City {
         m_SpotLight->OuterCutoff = glm::cos(glm::radians(13.5f));
     }
 
-    Helicopter::~Helicopter() { }
-
     void Helicopter::Update(float delta) {
         m_AngularPosition += c_FlightSpeed * delta;
 
@@ -74,6 +72,5 @@ namespace City {
         m_SpotLight->Position = newPosition + (c_LightOffset * glm::vec3(perpDir.x, 0.0f, perpDir.y));
         m_SpotLight->Direction = glm::vec3((glm::sin(recalcAngPos) * 0.5f) + glm::sin(m_LightPan) * 0.2f, -0.5f, (glm::cos(recalcAngPos) * 0.5f) + glm::sin(m_LightPan) * 0.2f);
     }
-
 
 }

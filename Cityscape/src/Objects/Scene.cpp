@@ -22,6 +22,11 @@ namespace City {
         AddGround();
         AddBuildingGrid();
 
+        m_PoliceCar.SetShader(m_MeshLoadShader);
+        m_CityScene.AddOpaqueObject(m_PoliceCar.GetModel());
+        m_LightingManager->AddPointLight(m_PoliceCar.GetRedLight());
+        m_LightingManager->AddPointLight(m_PoliceCar.GetBlueLight());
+
         m_CityScene.AddOpaqueObject(m_Helicopter.GetSceneObject());
         m_LightingManager->AddSpotLight(m_Helicopter.GetSpotLight());
     }
@@ -39,7 +44,7 @@ namespace City {
     void Scene::Update(float delta) {
 
         m_Helicopter.Update(delta);
-
+        m_PoliceCar.Update(delta);
     }
 
     void Scene::AddGround() {

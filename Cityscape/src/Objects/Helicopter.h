@@ -14,7 +14,7 @@ namespace City {
     class Helicopter {
     public:
         Helicopter();
-        ~Helicopter();
+        ~Helicopter() = default;
 
         void Update(float delta);
 
