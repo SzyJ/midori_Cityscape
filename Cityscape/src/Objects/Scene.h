@@ -6,6 +6,8 @@
 
 #pragma once
 
+#include "Objects/Helicopter.h"
+
 #include <midori/scene/Scene.h>
 #include <midori/renderer/camera/Camera.h>
 
@@ -25,8 +27,11 @@ namespace City {
 
     private:
         midori::Scene m_CityScene;
+
         midori::ref<midori::LightingManager> m_LightingManager;
         midori::ref<midori::Shader> m_MeshLoadShader;
+
+        Helicopter m_Helicopter;
 
         // City Layout
         const uint32_t c_BuildingRows = 10;

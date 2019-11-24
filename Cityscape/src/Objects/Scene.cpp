@@ -21,6 +21,8 @@ namespace City {
 
         AddGround();
         AddBuildingGrid();
+
+        m_CityScene.AddOpaqueObject(m_Helicopter.GetSceneObject());
     }
 
     void Scene::Draw() {
@@ -34,7 +36,9 @@ namespace City {
 
 
     void Scene::Update(float delta) {
-        
+
+        m_Helicopter.Update(delta);
+
     }
 
     void Scene::AddGround() {
@@ -113,7 +117,6 @@ namespace City {
         
         auto yellowDir = midori::make_ref<midori::DirectionalLight>(glm::vec3(-0.5f, -0.767f, 0.363f), glm::vec3(0.43f, 0.419f, 0.25f));
         yellowDir->Strength = 0.3f;
-        yellowDir->Strength = 0.3f;
         yellowDir->ShadowMap.OrthoNearZ = 5.0f;
         yellowDir->ShadowMap.OrthoFarZ = 150.0f;
         yellowDir->ShadowMap.OrthoDistFromOrigin = 75.0f;
@@ -122,7 +125,6 @@ namespace City {
 
         auto moonDir = midori::make_ref<midori::DirectionalLight>(glm::vec3(0.0f, -1.0f, -0.5f), glm::vec3(1.0f, 1.0f, 1.0f));
         moonDir->Strength = 0.5f;
-        moonDir->Strength = 0.3f;
         moonDir->ShadowMap.OrthoNearZ = 5.0f;
         moonDir->ShadowMap.OrthoFarZ = 150.0f;
         moonDir->ShadowMap.OrthoDistFromOrigin = 75.0f;
@@ -143,7 +145,6 @@ namespace City {
 
         auto buildingVA = midori::MeshLoader::Load(path);
         auto buildingObject = GetBaseBuilding();
-
         buildingObject->SetVertexArray(buildingVA);
 
         return buildingObject;

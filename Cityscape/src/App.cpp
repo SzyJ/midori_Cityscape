@@ -19,7 +19,7 @@ public:
         unsigned int screenHeight = midori::Application::Get().GetWindow().GetWindowHeight();
 
         m_Camera = new midori::PerspectiveCamera((float)screenWidth / (float)screenHeight, glm::vec3(0.0f, 60.0f, 10.0f));
-        //m_Camera->SetFarZ(200.0f);
+        m_Camera->SetFarZ(200.0f);
         m_CityScene.SetCamera(m_Camera);
 
         m_CityScene.SetScreenDientions(screenWidth, screenHeight);
@@ -33,6 +33,8 @@ public:
 
     void OnUpdate(midori::DeltaTime delta) override {
         m_DeltaAverage = (m_DeltaAverage * CONF_FPS_SMOOTHING) + (delta * (1.0f - CONF_FPS_SMOOTHING));
+
+        m_CityScene.Update(delta);
 
         // Handle input
         if (midori::Input::IsKeyPressed(MD_KEY_W)) {
@@ -64,7 +66,7 @@ public:
     void OnImGuiRender() override {
         ImGui::Begin("FPS");
         ImGui::Text(std::to_string((1.0f / m_DeltaAverage)).c_str());
-        ImGui::Text(std::string("Cam Pos: (").append(std::to_string(m_Camera->GetPosition().x)).append(", ").append(std::to_string(m_Camera->GetPosition().y)).append(", ").append(std::to_string(m_Camera->GetPosition().z)).append(")").c_str());
+        ImGui::Text(std::string("Cam Pos: (").append(std::to_string(m_Camera->GetDirection().x)).append(", ").append(std::to_string(m_Camera->GetDirection().y)).append(", ").append(std::to_string(m_Camera->GetDirection().z)).append(")").c_str());
         ImGui::End();
     }
 
