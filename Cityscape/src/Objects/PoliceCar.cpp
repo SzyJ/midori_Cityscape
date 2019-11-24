@@ -47,7 +47,7 @@ namespace City {
             ChooseRandomRoad();
         }
 
-        m_Position += m_MoveDirection * c_Speed * delta;
+        m_Position += m_MoveDirection * m_Speed * delta;
         m_Car->SetPosition(m_Position);
         m_BlueLight->Position = m_Position + glm::vec3(-0.25f, 1.2f, 0.0f);
         m_RedLight->Position = m_Position + glm::vec3(0.25f, 1.2f, 0.0f);
@@ -63,7 +63,7 @@ namespace City {
             roadIndex = rng - (m_RoadCount * 3);
             m_MoveDirection = glm::vec3(1.0f, 0.0f, 0.0f);
 
-            float zCoord = m_FurthestRoad + (static_cast<float>(roadIndex) * m_RoadSpacing);
+            float zCoord = -m_FurthestRoad + (static_cast<float>(roadIndex) * m_RoadSpacing);
             m_Position = glm::vec3(-m_SpawnPlane + offset, 0.0f, zCoord);
 
             m_Car->SetRotation(glm::vec3(0.0f, 0.5f, 0.0f));
@@ -72,16 +72,16 @@ namespace City {
             roadIndex = rng - (m_RoadCount * 2);
             m_MoveDirection = glm::vec3(0.0f, 0.0f, 1.0f);
 
-            float xCoord = m_FurthestRoad + (static_cast<float>(roadIndex) * m_RoadSpacing);
+            float xCoord = -m_FurthestRoad + (static_cast<float>(roadIndex) * m_RoadSpacing);
             m_Position = glm::vec3(xCoord, 0.0f, -m_SpawnPlane + offset);
 
-            m_Car->SetRotation(glm::vec3(0.0f, 1.0f, 0.0f));
+            m_Car->SetRotation(glm::vec3(0.0f, 0.0f, 0.0f));
 
         } else if (rng >= m_RoadCount) { // Right => Left
             roadIndex = rng - m_RoadCount;
             m_MoveDirection = glm::vec3(-1.0f, 0.0f, 0.0f);
 
-            float zCoord = m_FurthestRoad + (static_cast<float>(roadIndex) * m_RoadSpacing);
+            float zCoord = -m_FurthestRoad + (static_cast<float>(roadIndex) * m_RoadSpacing);
             m_Position = glm::vec3(m_SpawnPlane - offset, 0.0f, zCoord);
 
             m_Car->SetRotation(glm::vec3(0.0f, -0.5f, 0.0f));
@@ -90,11 +90,13 @@ namespace City {
             roadIndex = rng;
             m_MoveDirection = glm::vec3(0.0f, 0.0f, -1.0f);
 
-            float xCoord = m_FurthestRoad + (static_cast<float>(roadIndex) * m_RoadSpacing);
+            float xCoord = -m_FurthestRoad + (static_cast<float>(roadIndex) * m_RoadSpacing);
             m_Position = glm::vec3(xCoord, 0.0f, m_SpawnPlane - offset);
 
-            m_Car->SetRotation(glm::vec3(0.0f, -1.0f, 0.0f));
+            m_Car->SetRotation(glm::vec3(0.0f, 1.0f, 0.0f));
         }
+
+        m_Speed = 13.0f + static_cast<float>(rng % 4);
 
     }
 

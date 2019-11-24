@@ -43,7 +43,7 @@ namespace City {
         glm::vec3 m_Position;
         glm::vec3 m_MoveDirection;
 
-        float c_Speed = 15.0f;
+        float m_Speed = 15.0f;
 
         const float c_ChangeSpeed = 10.0f;
         float m_TotalTime = 0;

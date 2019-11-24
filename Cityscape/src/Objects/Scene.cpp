@@ -22,14 +22,18 @@ namespace City {
         AddGround();
         AddBuildingGrid();
 
-        m_PoliceCar.SetShader(m_MeshLoadShader);
-        float roadOffset = ((c_BuildingRows * 0.5f) - 1);
 
-        m_PoliceCar.SetCityLayout(roadOffset * c_BuildingSize + roadOffset * c_StreetSize, c_StreetSize + c_BuildingSize, c_BuildingRows, (roadOffset + 1) * c_BuildingSize + (roadOffset + 1) * c_StreetSize);
-        m_PoliceCar.ChooseRandomRoad();
-        m_CityScene.AddOpaqueObject(m_PoliceCar.GetModel());
-        m_LightingManager->AddPointLight(m_PoliceCar.GetRedLight());
-        m_LightingManager->AddPointLight(m_PoliceCar.GetBlueLight());
+        for (PoliceCar& car : m_PoliceCar) {
+            car.SetShader(m_MeshLoadShader);
+            float roadOffset = ((c_BuildingRows * 0.5f) - 1);
+
+            car.SetCityLayout(roadOffset * c_BuildingSize + roadOffset * c_StreetSize, c_StreetSize + c_BuildingSize, c_BuildingRows, (roadOffset + 1) * c_BuildingSize + (roadOffset + 1) * c_StreetSize);
+            car.ChooseRandomRoad();
+            m_CityScene.AddOpaqueObject(car.GetModel());
+            m_LightingManager->AddPointLight(car.GetRedLight());
+            m_LightingManager->AddPointLight(car.GetBlueLight());
+        }
+        
 
         m_CityScene.AddOpaqueObject(m_Helicopter.GetSceneObject());
         m_LightingManager->AddSpotLight(m_Helicopter.GetSpotLight());
@@ -48,7 +52,10 @@ namespace City {
     void Scene::Update(float delta) {
 
         m_Helicopter.Update(delta);
-        m_PoliceCar.Update(delta);
+        for (PoliceCar& car : m_PoliceCar) {
+            car.Update(delta);
+        }
+        
     }
 
     void Scene::AddGround() {

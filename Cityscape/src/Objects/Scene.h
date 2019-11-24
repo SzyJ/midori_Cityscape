@@ -33,7 +33,7 @@ namespace City {
         midori::ref<midori::Shader> m_MeshLoadShader;
 
         Helicopter m_Helicopter;
-        PoliceCar m_PoliceCar;
+        PoliceCar m_PoliceCar[5];
 
         // City Layout
         const uint32_t c_BuildingRows = 10;
