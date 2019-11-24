@@ -98,6 +98,8 @@ namespace City {
 
         m_Speed = 13.0f + static_cast<float>(rng % 4);
 
+        m_TotalTime = 0;
+
     }
 
 }
