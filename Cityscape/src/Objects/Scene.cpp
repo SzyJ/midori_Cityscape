@@ -23,6 +23,10 @@ namespace City {
         AddBuildingGrid();
 
         m_PoliceCar.SetShader(m_MeshLoadShader);
+        float roadOffset = ((c_BuildingRows * 0.5f) - 1);
+
+        m_PoliceCar.SetCityLayout(roadOffset * c_BuildingSize + roadOffset * c_StreetSize, c_StreetSize + c_BuildingSize, c_BuildingRows, (roadOffset + 1) * c_BuildingSize + (roadOffset + 1) * c_StreetSize);
+        m_PoliceCar.ChooseRandomRoad();
         m_CityScene.AddOpaqueObject(m_PoliceCar.GetModel());
         m_LightingManager->AddPointLight(m_PoliceCar.GetRedLight());
         m_LightingManager->AddPointLight(m_PoliceCar.GetBlueLight());
