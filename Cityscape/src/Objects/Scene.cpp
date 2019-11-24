@@ -23,6 +23,7 @@ namespace City {
         AddBuildingGrid();
 
         m_CityScene.AddOpaqueObject(m_Helicopter.GetSceneObject());
+        m_LightingManager->AddSpotLight(m_Helicopter.GetSpotLight());
     }
 
     void Scene::Draw() {

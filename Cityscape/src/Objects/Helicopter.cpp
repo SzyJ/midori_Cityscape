@@ -34,6 +34,11 @@ namespace City {
         m_Propeller->SetVertexArray(midori::MeshLoader::Load(MODEL_HELICOPTER_PROPELLER));
 
         m_Chassis->AddChild(m_Propeller);
+
+        m_SpotLight = midori::make_ref<midori::SpotLight>();
+        m_SpotLight->Color = glm::vec3(1.0f, 1.0f, 1.0f);
+        m_SpotLight->DistanceCutoff = 50.0f;
+        m_SpotLight->OuterCutoff = glm::cos(glm::radians(13.5f));
     }
 
     Helicopter::~Helicopter() { }
@@ -47,7 +52,6 @@ namespace City {
 
         glm::vec3 newPosition = glm::vec3(glm::sin(m_AngularPosition) * c_FlightArc, c_FlightHeight, glm::cos(m_AngularPosition) * c_FlightArc);
 
-
         float facingDir = m_AngularPosition / glm::pi<float>() - 1.0f;
         m_Chassis->SetPosition(newPosition);
         m_Chassis->SetRotation(glm::vec3(0.0f, facingDir - 0.5f, 0.0f));
@@ -58,6 +62,17 @@ namespace City {
 
         m_Propeller->SetRotation(glm::vec3(0.0f, m_PropellerRotation, 0.0f));
 
+
+        glm::vec2 perpDir = glm::perp(glm::vec2(0.0f), glm::vec2(newPosition.x, newPosition.z));
+        normalize(perpDir);
+
+        float recalcAngPos = m_AngularPosition;
+        recalcAngPos += 0.5f * glm::pi<float>();
+
+        m_LightPan += delta;
+
+        m_SpotLight->Position = newPosition + (c_LightOffset * glm::vec3(perpDir.x, 0.0f, perpDir.y));
+        m_SpotLight->Direction = glm::vec3((glm::sin(recalcAngPos) * 0.5f) + glm::sin(m_LightPan) * 0.2f, -0.5f, (glm::cos(recalcAngPos) * 0.5f) + glm::sin(m_LightPan) * 0.2f);
     }
 
 
