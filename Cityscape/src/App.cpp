@@ -19,7 +19,7 @@ public:
         unsigned int screenWidth = midori::Application::Get().GetWindow().GetWindowWidth();
         unsigned int screenHeight = midori::Application::Get().GetWindow().GetWindowHeight();
 
-        midori::Application::Get().GetWindow().SetVSync(false);
+        midori::Application::Get().GetWindow().SetVSync(true);
 
         m_Camera = new midori::PerspectiveCamera((float)screenWidth / (float)screenHeight, glm::vec3(0.0f, 60.0f, 10.0f));
         m_Camera->SetFarZ(200.0f);

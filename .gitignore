@@ -346,3 +346,5 @@ ASALocalRun/
 ## Include .obj files in resources folder
 !Cityscape/res/models/*.obj
 !Cityscape/res/models/buildings/*.obj
+!Cityscape/res/models/helicopter/*.obj
+!Cityscape/res/models/vehicles/*.obj
