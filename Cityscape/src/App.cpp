@@ -9,6 +9,8 @@
 #include "CameraTrack.h"
 
 #include <Midori.h>
+#include <midori/renderer/post-processing/PostProcessingPipeline.h>
+
 #include <imgui.h>
 
 class CityLayer : public midori::Layer {
@@ -25,7 +27,12 @@ public:
         m_Camera->SetFarZ(200.0f);
         m_CityScene.SetCamera(m_Camera);
 
-        m_CityScene.SetScreenDientions(screenWidth, screenHeight);
+        m_CityScene.SetScreenDimensions(screenWidth, screenHeight);
+
+
+        //m_PostProcess.AddStage(SHADER_PP_GRAYSCALE);
+        m_PostProcess.AddStage(SHADER_PP_RAINDROP);
+        m_PostProcess.UpdateScreenSize(screenWidth, screenHeight);
 
         midori::RenderCommand::Init();
     }
@@ -77,10 +84,13 @@ public:
         
 
         // Draw
-        midori::RenderCommand::SetClearColor({ 0.26f, 0.26f, 0.26f, 1.0f });
-        midori::RenderCommand::Clear();
+
+        m_CityScene.CalculateShadows();
+        m_PostProcess.BeginPostProcess();
 
         m_CityScene.Draw();
+
+        m_PostProcess.FinishPostProcess(m_TotalTime);
     }
 
     void OnImGuiRender() override {
@@ -121,7 +131,8 @@ private:
 
         midori::RenderCommand::SetViewport(0, 0, newWidth, newHeight);
         m_Camera->OnWindowResize(newWidth, newHeight);
-        m_CityScene.SetScreenDientions(newWidth, newHeight);
+        m_CityScene.SetScreenDimensions(newWidth, newHeight);
+        m_PostProcess.UpdateScreenSize(newWidth, newHeight);
     }
 
     // Debug
@@ -138,6 +149,8 @@ private:
 
     // Scene
     City::Scene m_CityScene;
+
+    midori::PostProcessingPipeline m_PostProcess;
 };
 
 class Cityscape : public midori::Application {

@@ -22,7 +22,6 @@ namespace City {
         AddGround();
         AddBuildingGrid();
 
-
         for (PoliceCar& car : m_PoliceCar) {
             car.SetShader(m_MeshLoadShader);
             float roadOffset = ((c_BuildingRows * 0.5f) - 1);
@@ -33,15 +32,21 @@ namespace City {
             m_LightingManager->AddPointLight(car.GetRedLight());
             m_LightingManager->AddPointLight(car.GetBlueLight());
         }
-        
 
         m_CityScene.AddOpaqueObject(m_Helicopter.GetSceneObject());
         m_LightingManager->AddSpotLight(m_Helicopter.GetSpotLight());
     }
 
-    void Scene::Draw() {
-        m_CityScene.DrawDepth();
+    void Scene::SetScreenDimensions(uint32_t width, uint32_t height) {
+        m_LightingManager->UpdateFrameBufferSize(width, height);
+    }
 
+    void Scene::CalculateShadows() {
+        m_CityScene.DrawDepth();
+    }
+
+
+    void Scene::Draw() {
         midori::RenderCommand::SetClearColor({ 0.26f, 0.26f, 0.26f, 1.0f });
         midori::RenderCommand::Clear();
 
@@ -50,12 +55,10 @@ namespace City {
 
 
     void Scene::Update(float delta) {
-
         m_Helicopter.Update(delta);
         for (PoliceCar& car : m_PoliceCar) {
             car.Update(delta);
         }
-        
     }
 
     void Scene::AddGround() {

@@ -21,9 +21,10 @@ namespace City {
 
         void SetCamera(midori::Camera* camera) { m_CityScene.SetCamera(camera); }
 
-        void SetScreenDientions(uint32_t width, uint32_t height) { m_LightingManager->UpdateFrameBufferSize(width, height); }
+        void SetScreenDimensions(uint32_t width, uint32_t height);
 
         void Draw();
+        void CalculateShadows();
         void Update(float delta);
 
     private:
