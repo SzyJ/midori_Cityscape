@@ -6,6 +6,7 @@
 
 #include "Resources.h"
 #include "Objects/Scene.h"
+#include "CameraTrack.h"
 
 #include <Midori.h>
 #include <imgui.h>
@@ -36,27 +37,44 @@ public:
     void OnUpdate(midori::DeltaTime delta) override {
         m_DeltaAverage = (m_DeltaAverage * CONF_FPS_SMOOTHING) + (delta * (1.0f - CONF_FPS_SMOOTHING));
 
+        m_TotalTime += delta;
+
+        m_Track.SetTime(m_TotalTime);
+
+        if (!m_Track.IsComplete() && m_OnTrack) {
+            m_Camera->SetPosition(m_Track.GetPosition());
+            m_Camera->SetDirection(m_Track.GetYaw(), m_Track.GetPitch());
+        }
+
+        if (m_Track.IsComplete() && m_OnTrack) {
+            m_OnTrack = false;
+            midori::Application::Get().GetWindow().SetCursorEnabled(m_CursorEnabled = false);
+        }
+
         m_CityScene.Update(delta);
 
         // Handle input
-        if (midori::Input::IsKeyPressed(MD_KEY_W)) {
-            m_Camera->Move(midori::MovementDirection::forward, delta * m_MoveSpeed);
+        if (!m_OnTrack) {
+            if (midori::Input::IsKeyPressed(MD_KEY_W)) {
+                m_Camera->Move(midori::MovementDirection::forward, delta * m_MoveSpeed);
+            }
+            if (midori::Input::IsKeyPressed(MD_KEY_A)) {
+                m_Camera->Move(midori::MovementDirection::left, delta * m_MoveSpeed);
+            }
+            if (midori::Input::IsKeyPressed(MD_KEY_S)) {
+                m_Camera->Move(midori::MovementDirection::backward, delta * m_MoveSpeed);
+            }
+            if (midori::Input::IsKeyPressed(MD_KEY_D)) {
+                m_Camera->Move(midori::MovementDirection::right, delta * m_MoveSpeed);
+            }
+            if (midori::Input::IsKeyPressed(MD_KEY_SPACE)) {
+                m_Camera->Move(midori::MovementDirection::up, delta * m_MoveSpeed);
+            }
+            if (midori::Input::IsKeyPressed(MD_KEY_LEFT_SHIFT)) {
+                m_Camera->Move(midori::MovementDirection::down, delta * m_MoveSpeed);
+            }
         }
-        if (midori::Input::IsKeyPressed(MD_KEY_A)) {
-            m_Camera->Move(midori::MovementDirection::left, delta * m_MoveSpeed);
-        }
-        if (midori::Input::IsKeyPressed(MD_KEY_S)) {
-            m_Camera->Move(midori::MovementDirection::backward, delta * m_MoveSpeed);
-        }
-        if (midori::Input::IsKeyPressed(MD_KEY_D)) {
-            m_Camera->Move(midori::MovementDirection::right, delta * m_MoveSpeed);
-        }
-        if (midori::Input::IsKeyPressed(MD_KEY_SPACE)) {
-            m_Camera->Move(midori::MovementDirection::up, delta * m_MoveSpeed);
-        }
-        if (midori::Input::IsKeyPressed(MD_KEY_LEFT_SHIFT)) {
-            m_Camera->Move(midori::MovementDirection::down, delta * m_MoveSpeed);
-        }
+        
 
         // Draw
         midori::RenderCommand::SetClearColor({ 0.26f, 0.26f, 0.26f, 1.0f });
@@ -68,7 +86,8 @@ public:
     void OnImGuiRender() override {
         ImGui::Begin("FPS");
         ImGui::Text(std::to_string((1.0f / m_DeltaAverage)).c_str());
-        ImGui::Text(std::string("Cam Pos: (").append(std::to_string(m_Camera->GetDirection().x)).append(", ").append(std::to_string(m_Camera->GetDirection().y)).append(", ").append(std::to_string(m_Camera->GetDirection().z)).append(")").c_str());
+        ImGui::Text(std::string("Cam Pos: (").append(std::to_string(m_Camera->GetPosition().x)).append(", ").append(std::to_string(m_Camera->GetPosition().y)).append(", ").append(std::to_string(m_Camera->GetPosition().z)).append(")").c_str());
+        ImGui::Text(std::string("Cam Dir: (Yaw: ").append(std::to_string(m_Camera->GetYaw())).append(", Pitch: ").append(std::to_string(m_Camera->GetPitch())).append(")").c_str());
         ImGui::End();
     }
 
@@ -89,6 +108,7 @@ public:
             auto& keyPressedEvent = (midori::KeyPressedEvent&) event;
             if (keyPressedEvent.GetKeyCode() == MD_KEY_ESCAPE) {
                 midori::Application::Get().GetWindow().SetCursorEnabled(m_CursorEnabled = !m_CursorEnabled);
+                m_OnTrack = false;
             }
             break;
         }
@@ -106,12 +126,15 @@ private:
 
     // Debug
     midori::DeltaTime m_DeltaAverage = 0.0f;
+    float m_TotalTime = 0.0f;
 
     // Camera
     midori::PerspectiveCamera* m_Camera;
+    City::CameraTrack m_Track;
     float m_MoveSpeed = 15.0f;
     float m_LookSens = 0.1f;
     bool m_CursorEnabled = false;
+    bool m_OnTrack = true;
 
     // Scene
     City::Scene m_CityScene;
