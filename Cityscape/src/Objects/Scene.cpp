@@ -125,7 +125,7 @@ namespace City {
     void Scene::AddLights() {
         m_LightingManager = midori::make_ref<midori::LightingManager>();
 
-        m_LightingManager->AmbientStrength = 0.5f;
+        m_LightingManager->AmbientStrength = 0.6f;
 
         auto blueDir = midori::make_ref<midori::DirectionalLight>(glm::vec3(0.5f, -0.74f, 0.47f), glm::vec3(0.19f, 0.23f, 0.5f));
         blueDir->Strength = 0.3f;

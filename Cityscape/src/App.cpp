@@ -18,21 +18,41 @@ public:
     CityLayer() : Layer("Cityscape") {
         m_CursorEnabled = true;
         midori::Application::Get().GetWindow().SetCursorEnabled(m_CursorEnabled);
-        unsigned int screenWidth = midori::Application::Get().GetWindow().GetWindowWidth();
-        unsigned int screenHeight = midori::Application::Get().GetWindow().GetWindowHeight();
+        m_ScreenWidth = midori::Application::Get().GetWindow().GetWindowWidth();
+        m_ScreenHeight = midori::Application::Get().GetWindow().GetWindowHeight();
 
-        midori::Application::Get().GetWindow().SetVSync(true);
+        midori::Application::Get().GetWindow().SetVSync(false);
 
-        m_Camera = new midori::PerspectiveCamera((float)screenWidth / (float)screenHeight, glm::vec3(0.0f, 60.0f, 10.0f));
+        m_Camera = new midori::PerspectiveCamera((float)m_ScreenWidth / (float)m_ScreenHeight, glm::vec3(0.0f, 60.0f, 10.0f));
         m_Camera->SetFarZ(200.0f);
         m_CityScene.SetCamera(m_Camera);
 
-        m_CityScene.SetScreenDimensions(screenWidth, screenHeight);
+        m_CityScene.SetScreenDimensions(m_ScreenWidth, m_ScreenHeight);
 
         //m_PostProcess.AddStage(SHADER_PP_FXAA);
         m_PostProcess.AddStage(SHADER_PP_COLOR_AMP);
         m_PostProcess.AddStage(SHADER_PP_RAINDROP);
-        m_PostProcess.UpdateScreenSize(screenWidth, screenHeight);
+        m_PostProcess.UpdateScreenSize(m_ScreenWidth, m_ScreenHeight);
+
+        float minimapQuadVertices[] = { // vertex attributes for a quad that fills the entire screen in Normalized Device Coordinates.
+        // positions     // texCoords
+        -1.0f,  1.0f,    0.0f, 1.0f,
+        -1.0f, -1.0f,    0.0f, 0.0f,
+         1.0f, -1.0f,    1.0f, 0.0f,
+
+        -1.0f,  1.0f,    0.0f, 1.0f,
+         1.0f, -1.0f,    1.0f, 0.0f,
+         1.0f,  1.0f,    1.0f, 1.0f
+        };
+        auto vertexBuffer = midori::VertexBuffer::Create(minimapQuadVertices, (2 + 2) * 3 * 2);
+        vertexBuffer->SetLayout({
+            { midori::ShaderDataType::Float2, "a_Position" },
+            { midori::ShaderDataType::Float2, "a_TexCoord" }
+            });
+        m_Minimap = midori::VertexArray::Create();
+        m_Minimap->AddVertexBuffer(vertexBuffer);
+
+        m_MinimapShader = midori::Shader::Load(GAME_SHADERS"Minimap");
 
         midori::RenderCommand::Init();
     }
@@ -89,13 +109,21 @@ public:
         m_CityScene.Draw();
 
         m_PostProcess.FinishPostProcess(m_TotalTime);
+
+        // Draw Minimap
+        midori::RenderCommand::SetViewport(5, 5, m_ScreenWidth / 4.0f, m_ScreenHeight / 4.0f);
+        m_MinimapShader->Bind();
+        m_MinimapShader->UploadUniformInt("u_InputTexture", 10);
+        midori::Renderer::Submit(m_MinimapShader, m_Minimap);
+
+        midori::RenderCommand::SetViewport(0, 0, m_ScreenWidth, m_ScreenHeight);
     }
 
     void OnImGuiRender() override {
         ImGui::Begin("FPS");
         ImGui::Text(std::to_string((1.0f / m_DeltaAverage)).c_str());
-        ImGui::Text(std::string("Cam Pos: (").append(std::to_string(m_Camera->GetPosition().x)).append(", ").append(std::to_string(m_Camera->GetPosition().y)).append(", ").append(std::to_string(m_Camera->GetPosition().z)).append(")").c_str());
-        ImGui::Text(std::string("Cam Dir: (Yaw: ").append(std::to_string(m_Camera->GetYaw())).append(", Pitch: ").append(std::to_string(m_Camera->GetPitch())).append(")").c_str());
+        //ImGui::Text(std::string("Cam Pos: (").append(std::to_string(m_Camera->GetPosition().x)).append(", ").append(std::to_string(m_Camera->GetPosition().y)).append(", ").append(std::to_string(m_Camera->GetPosition().z)).append(")").c_str());
+        //ImGui::Text(std::string("Cam Dir: (Yaw: ").append(std::to_string(m_Camera->GetYaw())).append(", Pitch: ").append(std::to_string(m_Camera->GetPitch())).append(")").c_str());
         ImGui::End();
     }
 
@@ -117,6 +145,11 @@ public:
             if (keyPressedEvent.GetKeyCode() == MD_KEY_ESCAPE) {
                 midori::Application::Get().GetWindow().SetCursorEnabled(m_CursorEnabled = !m_CursorEnabled);
                 m_OnTrack = false;
+            } else if (keyPressedEvent.GetKeyCode() == MD_KEY_0) {
+                m_TotalTime = 0.0f;
+                m_OnTrack = true;
+                m_Camera->SetPosition(glm::vec3(0.0f, 60.0f, 10.0f));
+                m_Camera->SetDirection(-90.0f, 0.0f);
             }
             break;
         }
@@ -126,6 +159,8 @@ private:
     void OnWindowResize(midori::WindowResizeEvent& resizeEvent) {
         const auto newWidth = resizeEvent.GetWidth();
         const auto newHeight = resizeEvent.GetHeight();
+        m_ScreenWidth = newWidth;
+        m_ScreenHeight = newHeight;
 
         midori::RenderCommand::SetViewport(0, 0, newWidth, newHeight);
         m_Camera->OnWindowResize(newWidth, newHeight);
@@ -136,6 +171,10 @@ private:
     // Debug
     midori::DeltaTime m_DeltaAverage = 0.0f;
     float m_TotalTime = 0.0f;
+    uint32_t m_ScreenWidth;
+    uint32_t m_ScreenHeight;
+    midori::ref<midori::VertexArray> m_Minimap;
+    midori::ref<midori::Shader> m_MinimapShader;
 
     // Camera
     midori::PerspectiveCamera* m_Camera;
