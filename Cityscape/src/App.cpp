@@ -29,8 +29,8 @@ public:
 
         m_CityScene.SetScreenDimensions(screenWidth, screenHeight);
 
-
-        //m_PostProcess.AddStage(SHADER_PP_GRAYSCALE);
+        //m_PostProcess.AddStage(SHADER_PP_FXAA);
+        m_PostProcess.AddStage(SHADER_PP_COLOR_AMP);
         m_PostProcess.AddStage(SHADER_PP_RAINDROP);
         m_PostProcess.UpdateScreenSize(screenWidth, screenHeight);
 
@@ -81,10 +81,8 @@ public:
                 m_Camera->Move(midori::MovementDirection::down, delta * m_MoveSpeed);
             }
         }
-        
 
         // Draw
-
         m_CityScene.CalculateShadows();
         m_PostProcess.BeginPostProcess();
 

@@ -148,6 +148,9 @@ void main() {
     float gamma = 2.2f;
 
     result = pow(result, vec3(gamma));
+
+    result = vec3(result.r + (1.0f - result.r) * (result.r), result.g + (1.0f - result.g) * (result.g), result.b + (1.0f - result.b) * (result.b));
+
     color = vec4(result, 1.0f);
 }
 
@@ -210,7 +213,7 @@ float DirLightShadowCalculation(vec3 lightDir, int index) {
         for(int y = -1; y <= 1; ++y) {
             float pcfDepth = texture(u_DirLightDepthMap[index], projCoords.xy + vec2(x, y) * texelSize).r; 
             shadow += currentDepth - bias > pcfDepth  ? 1.0 : 0.0;
-        }    
+        }
     }
     shadow /= 9.0;
 

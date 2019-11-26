@@ -22,5 +22,6 @@
 #define SHADER_MODEL_LOADER GAME_SHADERS"MeshLoad"
 #define SHADER_HELICOPTER GAME_SHADERS"Helicopter"
 
-#define SHADER_PP_GRAYSCALE GAME_SHADERS"post-process/Grayscale"
+#define SHADER_PP_COLOR_AMP GAME_SHADERS"post-process/ColorAmp"
 #define SHADER_PP_RAINDROP GAME_SHADERS"post-process/LensRaindrop"
+#define SHADER_PP_FXAA GAME_SHADERS"post-process/FXAA"
