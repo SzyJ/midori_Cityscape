@@ -11,6 +11,8 @@
 
 // Textures
 #define TEXTURE_SKYBOX GAME_TEXTURES"skybox/NightSky"
+#define TEXTURE_WATER_DISP GAME_TEXTURES"Water_Displacement.png"
+#define TEXTURE_WATER_NORMAL GAME_TEXTURES"Water_Normal.jpg"
 
 // Models
 #define MODEL_BUILDING GAME_MODELS"buildings/building_"
@@ -21,6 +23,7 @@
 // Shaders
 #define SHADER_MODEL_LOADER GAME_SHADERS"MeshLoad"
 #define SHADER_HELICOPTER GAME_SHADERS"Helicopter"
+#define SHADER_WATER GAME_SHADERS"WaterPlane"
 
 #define SHADER_PP_COLOR_AMP GAME_SHADERS"post-process/ColorAmp"
 #define SHADER_PP_RAINDROP GAME_SHADERS"post-process/LensRaindrop"

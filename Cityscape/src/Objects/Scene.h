@@ -8,6 +8,7 @@
 
 #include "Objects/Helicopter.h"
 #include "Objects/PoliceCar.h"
+#include "Objects/Water.h"
 
 #include <midori/scene/Scene.h>
 #include <midori/renderer/camera/Camera.h>
@@ -35,8 +36,11 @@ namespace City {
 
         Helicopter m_Helicopter;
         PoliceCar m_PoliceCar[5];
+        Water m_Water[(4 * 2) + 4];
 
         // City Layout
+        const float c_GroundSize = 75.0f;
+        const float c_WaterTileSize = c_GroundSize * 0.5f;
         const uint32_t c_BuildingRows = 10;
         const uint32_t c_BuildingCols = 10;
         const float c_BuildingSize = 10.0f;
@@ -47,6 +51,8 @@ namespace City {
         // Generation
         inline void AddGround();
         inline void AddBuildingGrid();
+        inline void AddWater();
+        inline void ConfWater(Water& waterTile, float posX, float posZ, uint32_t attachmentPoint = 0);
 
         // Lighting
         inline void AddLights();

@@ -20,19 +20,20 @@ namespace City {
         LoadSkyBox();
 
         AddGround();
+        AddWater();
         AddBuildingGrid();
 
         for (PoliceCar& car : m_PoliceCar) {
             car.SetShader(m_MeshLoadShader);
             float roadOffset = ((c_BuildingRows * 0.5f) - 1);
-
+        
             car.SetCityLayout(roadOffset * c_BuildingSize + roadOffset * c_StreetSize, c_StreetSize + c_BuildingSize, c_BuildingRows, (roadOffset + 1) * c_BuildingSize + (roadOffset + 1) * c_StreetSize);
             car.ChooseRandomRoad();
             m_CityScene.AddOpaqueObject(car.GetModel());
             m_LightingManager->AddPointLight(car.GetRedLight());
             m_LightingManager->AddPointLight(car.GetBlueLight());
         }
-
+        
         m_CityScene.AddOpaqueObject(m_Helicopter.GetSceneObject());
         m_LightingManager->AddSpotLight(m_Helicopter.GetSpotLight());
     }
@@ -45,7 +46,6 @@ namespace City {
         m_CityScene.DrawDepth();
     }
 
-
     void Scene::Draw() {
         midori::RenderCommand::SetClearColor({ 0.26f, 0.26f, 0.26f, 1.0f });
         midori::RenderCommand::Clear();
@@ -55,10 +55,54 @@ namespace City {
 
 
     void Scene::Update(float delta) {
+        for (Water& waterTile : m_Water) {
+            waterTile.Update(delta);
+        }
         m_Helicopter.Update(delta);
         for (PoliceCar& car : m_PoliceCar) {
             car.Update(delta);
         }
+    }
+
+    void Scene::AddWater() {
+        float maxDisplacement = c_GroundSize + c_WaterTileSize;
+        float halfDisplacement = c_GroundSize * 0.5f;
+
+        // Top Left
+        ConfWater(m_Water[0], -maxDisplacement, -maxDisplacement);
+
+        // Top
+        ConfWater(m_Water[1], -halfDisplacement, -maxDisplacement, 4);
+        ConfWater(m_Water[2],  halfDisplacement, -maxDisplacement, 4);
+
+        // Top Right
+        ConfWater(m_Water[3], maxDisplacement, -maxDisplacement);
+
+        // Right
+        ConfWater(m_Water[4], maxDisplacement, -halfDisplacement, 1);
+        ConfWater(m_Water[5], maxDisplacement,  halfDisplacement, 1);
+
+        // Bottom Right
+        ConfWater(m_Water[6], maxDisplacement, maxDisplacement);
+
+        // Bottom
+        ConfWater(m_Water[7],  halfDisplacement, maxDisplacement, 2);
+        ConfWater(m_Water[8], -halfDisplacement, maxDisplacement, 2);
+
+        // Bottom Left
+        ConfWater(m_Water[9], -maxDisplacement, maxDisplacement);
+
+        // Left
+        ConfWater(m_Water[10], -maxDisplacement,  halfDisplacement, 3);
+        ConfWater(m_Water[11], -maxDisplacement, -halfDisplacement, 3);
+    }
+
+    void Scene::ConfWater(Water& waterTile, float posX, float posZ, uint32_t attachmentPoint) {
+        waterTile.SetSize(c_WaterTileSize);
+        waterTile.SetPosition(glm::vec3(posX, -4.5f, posZ));
+        waterTile.SetAttachmentPoint(attachmentPoint);
+
+        m_CityScene.AddOpaqueObject(waterTile.GetObject());
     }
 
     void Scene::AddGround() {
@@ -88,7 +132,7 @@ namespace City {
         auto ground = midori::make_ref<midori::SceneObject>();
         ground->SetShader(m_MeshLoadShader);
         ground->SetVertexArray(groundVA);
-        ground->SetScale(75.0f);
+        ground->SetScale(c_GroundSize);
         ground->SetMaterial(midori::Material::Chrome());
 
         m_CityScene.AddOpaqueObject(ground);

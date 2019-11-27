@@ -111,19 +111,21 @@ public:
         m_PostProcess.FinishPostProcess(m_TotalTime);
 
         // Draw Minimap
-        midori::RenderCommand::SetViewport(5, 5, m_ScreenWidth / 4.0f, m_ScreenHeight / 4.0f);
-        m_MinimapShader->Bind();
-        m_MinimapShader->UploadUniformInt("u_InputTexture", 10);
-        midori::Renderer::Submit(m_MinimapShader, m_Minimap);
+        if (m_ShowMinimap) {
+            midori::RenderCommand::SetViewport(5, 5, m_ScreenWidth / 4.0f, m_ScreenHeight / 4.0f);
+            m_MinimapShader->Bind();
+            m_MinimapShader->UploadUniformInt("u_InputTexture", 10);
+            midori::Renderer::Submit(m_MinimapShader, m_Minimap);
 
-        midori::RenderCommand::SetViewport(0, 0, m_ScreenWidth, m_ScreenHeight);
+            midori::RenderCommand::SetViewport(0, 0, m_ScreenWidth, m_ScreenHeight);
+        }
     }
 
     void OnImGuiRender() override {
         ImGui::Begin("FPS");
         ImGui::Text(std::to_string((1.0f / m_DeltaAverage)).c_str());
-        //ImGui::Text(std::string("Cam Pos: (").append(std::to_string(m_Camera->GetPosition().x)).append(", ").append(std::to_string(m_Camera->GetPosition().y)).append(", ").append(std::to_string(m_Camera->GetPosition().z)).append(")").c_str());
-        //ImGui::Text(std::string("Cam Dir: (Yaw: ").append(std::to_string(m_Camera->GetYaw())).append(", Pitch: ").append(std::to_string(m_Camera->GetPitch())).append(")").c_str());
+        ImGui::Text(std::string("Cam Pos: (").append(std::to_string(m_Camera->GetPosition().x)).append(", ").append(std::to_string(m_Camera->GetPosition().y)).append(", ").append(std::to_string(m_Camera->GetPosition().z)).append(")").c_str());
+        ImGui::Text(std::string("Cam Dir: (Yaw: ").append(std::to_string(m_Camera->GetYaw())).append(", Pitch: ").append(std::to_string(m_Camera->GetPitch())).append(")").c_str());
         ImGui::End();
     }
 
@@ -150,6 +152,8 @@ public:
                 m_OnTrack = true;
                 m_Camera->SetPosition(glm::vec3(0.0f, 60.0f, 10.0f));
                 m_Camera->SetDirection(-90.0f, 0.0f);
+            } else if (keyPressedEvent.GetKeyCode() == MD_KEY_M) {
+                m_ShowMinimap = !m_ShowMinimap;
             }
             break;
         }
@@ -175,6 +179,7 @@ private:
     uint32_t m_ScreenHeight;
     midori::ref<midori::VertexArray> m_Minimap;
     midori::ref<midori::Shader> m_MinimapShader;
+    bool m_ShowMinimap = false;
 
     // Camera
     midori::PerspectiveCamera* m_Camera;
