@@ -21,7 +21,7 @@ public:
         m_ScreenWidth = midori::Application::Get().GetWindow().GetWindowWidth();
         m_ScreenHeight = midori::Application::Get().GetWindow().GetWindowHeight();
 
-        midori::Application::Get().GetWindow().SetVSync(false);
+        midori::Application::Get().GetWindow().SetVSync(true);
 
         m_Camera = new midori::PerspectiveCamera((float)m_ScreenWidth / (float)m_ScreenHeight, glm::vec3(0.0f, 60.0f, 10.0f));
         m_Camera->SetFarZ(200.0f);
@@ -29,12 +29,11 @@ public:
 
         m_CityScene.SetScreenDimensions(m_ScreenWidth, m_ScreenHeight);
 
-        //m_PostProcess.AddStage(SHADER_PP_FXAA);
         m_PostProcess.AddStage(SHADER_PP_COLOR_AMP);
         m_PostProcess.AddStage(SHADER_PP_RAINDROP);
         m_PostProcess.UpdateScreenSize(m_ScreenWidth, m_ScreenHeight);
 
-        float minimapQuadVertices[] = { // vertex attributes for a quad that fills the entire screen in Normalized Device Coordinates.
+        float minimapQuadVertices[] = {
         // positions     // texCoords
         -1.0f,  1.0f,    0.0f, 1.0f,
         -1.0f, -1.0f,    0.0f, 0.0f,
