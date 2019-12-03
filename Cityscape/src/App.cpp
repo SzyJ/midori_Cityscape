@@ -29,6 +29,7 @@ public:
 
         m_CityScene.SetScreenDimensions(m_ScreenWidth, m_ScreenHeight);
 
+        m_PostProcess.AddStage(SHADER_PP_FXAA);
         m_PostProcess.AddStage(SHADER_PP_COLOR_AMP);
         m_PostProcess.AddStage(SHADER_PP_RAINDROP);
         m_PostProcess.UpdateScreenSize(m_ScreenWidth, m_ScreenHeight);

@@ -3,8 +3,8 @@
 uniform sampler2D u_InputTexture;  //the rendered framebuffer containing the color bound as sampler2D
 uniform vec2 win_size;    //the size of the window/framebuffer
 
-uniform uint u_FrameWidth;
-uniform uint u_FrameHeight;
+uniform int u_FrameWidth;
+uniform int u_FrameHeight;
 
 layout( location = 0 ) out vec4 def_e; //the manipulated color output
  
